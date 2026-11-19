@@ -25,7 +25,11 @@
  *
  * Daarna de feedbackpagina, de labels naar dag 2, en wizard/workshop-2.html voor de tweede dag: het
  * huiswerk komt in deel C, de instructie volgt de opbouw van de stap prompting, de rekenhulp rekent
- * zonder ingebouwde prijzen, de opdrachten zijn neutraal, en de geheimenwacht houdt een sleutel tegen. Als laatste het inlogscherm, op een
+ * zonder ingebouwde prijzen, de opdrachten zijn neutraal, en de geheimenwacht houdt een sleutel tegen. Sinds template v1.8.0 ook: de
+ * preview en de dev-branch komen uit de branch seed en niet uit productie (een gewone branch, of alleen het schema met de begeleider
+ * erbij, en nergens pnpm db:migrate op een branch met alleen het schema), deel B noemt de poorten van de CI en eindigt met de
+ * veiligheidslijst (bouwen, instellen, afspreken), en de opdracht voor de AI-functie vraagt om een smokkeltest, platte tekst, het
+ * nagemaakte model en de privacyteksten. Als laatste het inlogscherm, op een
  * nagebootste site: vanaf file:// is er geen inlog, en dat bewijzen alle tests hiervoor.
  *
  *   node ci/wizard-smoke.mjs           draait en ruimt op
@@ -326,8 +330,12 @@ try {
   const checklist = files[checklistName];
   check(checklist.includes(`\`${CASE.slug}\``) && checklist.includes("handleiding 05b") && checklist.includes("Transport SMTP"), "de checklist volgt de keuzes");
   check(!checklist.includes("Inloggen met Microsoft"), "de checklist slaat Entra over");
+  check(checklist.includes("Een branch `seed`") && checklist.includes("`DATABASE_URL_APP` op Production") && checklist.includes("De Data API staat uit") && checklist.includes("`PRODUCTION_DB_ENDPOINT` in Vercel voor alle drie de omgevingen"), "de checklist volgt het template bij Neon: seed, de rol van de app, de Data API en het endpoint in alle drie de omgevingen");
+  check(checklist.includes("een gewone branch van de productiebranch") && checklist.includes("`seed` gevuld, net als `dev`") && checklist.includes("één account met een wachtwoord op `seed`") && !checklist.includes("alleen het schema"), "de checklist: seed is een gewone branch, gevuld bij het lokaal werken, met één account voor de preview");
+  check(checklist.includes("## Werken met een releasebranch (handleiding 09)") && checklist.includes("## Voordat er echte gebruikers komen") && checklist.includes("bouwt (B), instelt bij een leverancier (I) of afspreekt (A)") && checklist.includes("Uploads:"), "de checklist heeft de releasebranch en de veiligheidslijst met bouwen, instellen en afspreken");
   const prompt = files["startprompt.md"];
   check(prompt.includes("pnpm template:apply") && prompt.includes("Git doe ik zelf"), "de startprompt noemt apply en laat git bij de mens");
+  check(prompt.includes("Draai `pnpm install` en daarna `pnpm template:apply`") && prompt.includes("het eerste vrije D-nummer") && !/\bD1[0-9]\b/.test(prompt.slice(prompt.indexOf("## Wat je doet"))), "de startprompt installeert eerst en noemt geen vast D-nummer voor de besluiten");
   /** Het codeblok onder een kop "## Bestand n": de inhoud, en of de afbakening langer is dan elke reeks backticks erin. */
   const block = (n, info) => {
     const start = prompt.indexOf(`## Bestand ${n}:`);
@@ -377,7 +385,7 @@ try {
 
   // Telefoonbreedte: niets schuift opzij.
   await page.setViewportSize({ width: 390, height: 844 });
-  for (const hash of ["#voorbereiden", "#voorbereiden-2", "#ontwerpen", "#live-3"]) {
+  for (const hash of ["#voorbereiden", "#voorbereiden-2", "#ontwerpen", "#live-1", "#live-3", "#live-8"]) {
     await page.goto(`${index}${hash}`);
     await heading.waitFor({ state: "visible" });
     const width = await page.evaluate(() => document.documentElement.scrollWidth);
@@ -465,6 +473,20 @@ try {
   await page.goto(`${index}#live-5`);
   await headingIs("Stap 5 van 8", "dag 1: de stap met de variabelen opent via het adres");
   check((await page.locator(".dag2 a[href='workshop-2.html#devprod']").count()) === 1, "dag 1: de stap met de variabelen wijst naar dag 2, dev en prod");
+  const variables = (await page.locator("main").textContent()) ?? "";
+  check(variables.includes("PRODUCTION_DB_ENDPOINT: voor alle drie de omgevingen") && variables.includes("DATABASE_URL_APP en DATABASE_URL_OWNER staan ook in de lijst van Claude"), "dag 1: het endpoint van productie staat in alle drie de omgevingen, en de twee variabelen voor later zet je nog niet");
+  await page.goto(`${index}#live-4`);
+  await headingIs("Stap 4 van 8", "dag 1: Vercel en Neon opent via het adres");
+  const neonStep = (await page.locator("main").textContent()) ?? "";
+  check(neonStep.includes("naam seed, parent de productiebranch") && neonStep.includes("Set as default") && neonStep.includes("niet de optie voor alleen het schema"), "dag 1: seed is een gewone branch van de nog lege productiebranch, en de default branch");
+  await page.goto(`${index}#live-8`);
+  await headingIs("Stap 8 van 8", "dag 1: werken via release/next opent via het adres");
+  const release = (await page.locator("main").textContent()) ?? "";
+  check(release.includes("zonder je echte gegevens") && !release.includes("kopie van de database") && release.includes("Wat er uitrolt, en wat de CI nakijkt") && release.includes("GPL of AGPL"), "dag 1: de preview heeft geen echte gegevens, en de stap zegt wat er uitrolt en wat de CI nakijkt");
+  check(release.includes("je vult hem bij het lokaal werken, net als je dev-branch") && release.includes("pnpm invite -- <adres>") && release.includes("Met Microsoft werkt inloggen zoals altijd"), "dag 1: seed vul je bij het lokaal werken, en de stap zegt hoe je op een preview inlogt");
+  await page.goto(`${index}#live-1`);
+  await headingIs("Stap 1 van 8", "dag 1: Use this template opent via het adres");
+  check((await page.locator(`main a[href="https://github.com/${new URL(pin.repo).pathname.replace(/^\/|\.git$/g, "")}"]`).count()) === 1 && ((await page.locator("main").textContent()) ?? "").includes("afgeschermde repo"), "dag 1: de link naar het template is het adres uit template.json, en de stap zegt dat de repo is afgeschermd");
   const day2Url = pathToFileURL(join(root, "wizard", "workshop-2.html")).href;
   const day2 = await context.newPage();
   day2.setDefaultTimeout(15_000);
@@ -512,8 +534,33 @@ try {
   await day2Open("#voorbereiden-7", "Stap 7 van 8", "het huiswerk opent via het adres");
   await day2.check("#a-route-1");
   await day2.fill("#a-test-2", "Aantal kinderen: 28\nWensen: een schoolreisje");
-  await day2Open("#devprod-8", "Stap 8 van 8", "deel B, stap 8 over echte gegevens buiten productie");
-  check(((await day2.locator("main").textContent()) ?? "").includes("een kopie van productie"), "workshop-2: deel B zegt dat de preview een kopie van productie is");
+  await day2Open("#devprod-3", "Stap 3 van 8", "deel B, stap 3 met de branches seed en dev");
+  const seedText = async () => (await day2.locator("main").textContent()) ?? "";
+  const openSeed = await seedText();
+  check((await day2.locator("#b-real input[type=radio]").count()) === 2 && openSeed.includes("Staan er al gegevens van echte mensen in je tool, anders dan van jezelf?") && !openSeed.includes("schema only") && openSeed.includes("parent seed"), "workshop-2: deel B, stap 3 stelt één vraag, toont nog geen route, en haalt dev uit seed");
+  check(openSeed.includes("Met Microsoft log je op een preview in zoals altijd") && openSeed.includes("pnpm invite -- <adres>") && openSeed.includes("Dat hoort bij het vullen van seed"), "workshop-2: stap 3 zegt hoe je op een preview uit seed inlogt, per soort inlog");
+  await day2.check("#b-real-0");
+  const snapshotText = await seedText();
+  const snapshotPrompt = (await day2.locator("main pre").first().textContent()) ?? "";
+  check(["Een gewone branch", "een momentopname van je productiebranch van vandaag", "Haal eerst weg wat echt is", "Set as default"].every((part) => snapshotText.includes(part)) && !snapshotText.includes("schema only"), "workshop-2: zonder gegevens van anderen is seed een gewone branch, eerlijk benoemd als momentopname");
+  check(snapshotPrompt.includes("pnpm db:seed") && snapshotPrompt.includes("alle migraties moeten als toegepast staan") && !snapshotPrompt.includes("pnpm db:migrate"), "workshop-2: op de momentopname draait alleen pnpm db:seed, geen pnpm db:migrate");
+  await day2.check("#b-real-1");
+  const schemaText = await seedText();
+  check(["schema only", "0 toegepast", "already exists", "Draai pnpm db:migrate op deze branch dus niet", "Eerst de lijst van migraties over", "nog niet tegen een echte database bewezen", "samen met wie je begeleidt"].every((part) => schemaText.includes(part)), "workshop-2: met gegevens van anderen is seed alleen het schema, met de valkuil van de lege lijst van migraties en de begeleider erbij");
+  check((await day2.locator("main pre").count()) === 0 && !/insert into|select \*/i.test(schemaText), "workshop-2: de route met alleen het schema geeft geen opdracht om te plakken en schrijft geen SQL uit");
+  check((await day2.evaluate(() => JSON.parse(window.localStorage.getItem("foundation-workshop2:v2") ?? "{}").realData)) === "yes", "workshop-2: de keuze staat in de bewaarde stand");
+  await day2Open("#devprod-4", "Stap 4 van 8", "deel B, stap 4 lokaal werken");
+  const localText = (await day2.locator("main").textContent()) ?? "";
+  check(localText.includes("pnpm db:app-login") && localText.includes("Is seed nog leeg? Vul hem dan net als dev") && localText.includes("stop dan en draai geen pnpm db:migrate"), "workshop-2: lokaal werkt de tool als de rol van de app, een lege seed vul je net als dev, en db:migrate stopt bij tabellen zonder migraties");
+  await day2Open("#devprod-6", "Stap 6 van 8", "deel B, stap 6 een ronde via release/next");
+  const round = (await day2.locator("main").textContent()) ?? "";
+  check(round.includes("Geheimen in de hele historie") && round.includes("Licenties") && round.includes("push naar release/next"), "workshop-2: deel B noemt de poorten van de CI in gewone taal");
+  await day2Open("#devprod-8", "Stap 8 van 8", "deel B, stap 8 klaar voor echte gebruikers");
+  const ready = (await day2.locator("main").textContent()) ?? "";
+  check(ready.includes("uit de branch seed") && !ready.includes("een kopie van productie"), "workshop-2: deel B zegt dat de preview uit de branch seed komt, zonder echte gegevens");
+  check(ready.includes("De rol van de app op productie") && ready.includes("DATABASE_URL_APP") && ready.includes("Data API"), "workshop-2: deel B, stap 8 zet de rol van de app op productie en noemt de instellingen in Neon");
+  check(["B van bouwen", "I van instellen", "A van afspreken", "een checklist vindt wat er niet is", "docs/veiligheid.md", "docs/patronen/veiligheidschecklist.md"].every((part) => ready.includes(part)), "workshop-2: deel B, stap 8 heeft de veiligheidslijst met bouwen, instellen en afspreken en de opdracht voor Claude");
+  for (const hit of FORBIDDEN.filter((word) => ready.toLowerCase().includes(word.toLowerCase()))) check(false, `workshop-2: de opdracht bij de veiligheidslijst is neutraal (${hit})`);
   await day2Open("#ontwerpen-3", "Stap 3 van 8", "deel C, stap 3");
   check(await day2.isChecked("#c-route-1"), "workshop-2: de keuze uit het huiswerk staat in deel C");
 
@@ -526,6 +573,8 @@ try {
   await day2.getByRole("button", { name: "Verwijder veld 9" }).click();
   const gets = await live("claude-gets");
   check(gets.includes("<gegevens>\nAantal kinderen: <waarde>") && !gets.includes("Naam ouder:") && gets.includes("Gaat nooit mee: Naam ouder"), "workshop-2: Claude krijgt alleen de aangevinkte velden, tussen <gegevens>");
+  const dataStepText = (await day2.locator("main").textContent()) ?? "";
+  check(["een smokkeltest", "afgeleide gegevens", "Tekst van buiten is data", "platte tekst", "Claude krijgt geen gereedschap", "Tekst van klanten waarvoor je organisatie verwerker is, gaat niet mee", "data-inventaris"].every((part) => dataStepText.includes(part)), "workshop-2: de stap gegevens legt de smokkeltest uit, zegt dat tekst van buiten data is, en wat nooit meegaat");
   await day2.check("#c-f-0-ai");
   check((await day2.locator("#d-sensitive-ok").count()) === 1, "workshop-2: een gevoelig veld vraagt om een bevestiging");
   await day2.uncheck("#c-f-0-ai");
@@ -587,6 +636,12 @@ try {
   const aiPrompt = await day2.inputValue("#ai-prompt-text");
   check(aiPrompt.includes("structured outputs") && aiPrompt.includes("ANTHROPIC_API_KEY") && aiPrompt.includes("| Categorie | keuze uit een vaste lijst | Kinderfeestje, Schoolbezoek, Groepsbezoek, Overig |") && aiPrompt.includes("denkniveau van deze prompt standaard op laag"), "workshop-2: de opdracht noemt structured outputs, de sleutel, de vaste structuur en het denkniveau");
   check(aiPrompt.includes("Nooit: Naam ouder") && aiPrompt.includes("(verwacht: Kinderfeestje)"), "workshop-2: de opdracht zegt wat nooit meegaat en wat elk testgeval verwacht");
+  check(aiPrompt.includes("smokkeltest") && aiPrompt.includes("lib/ai/outgoing.ts") && aiPrompt.includes("de velden die nooit mee mogen (Naam ouder") && aiPrompt.includes("afgeleide gegevens"), "workshop-2: de opdracht vraagt om een smokkeltest met de velden die nooit meegaan, en om afgeleide gegevens");
+  check(aiPrompt.includes("platte tekst") && aiPrompt.includes("geen gereedschap") && aiPrompt.includes("Schrijven gaat via de knop, nooit via een zin"), "workshop-2: de opdracht eist platte tekst, geen gereedschap, en schrijven via de knop");
+  check(aiPrompt.includes("AI_FAKE=1") && aiPrompt.includes("vijandig testgeval") && aiPrompt.includes("privacyverklaring") && aiPrompt.includes("data-inventaris"), "workshop-2: de opdracht noemt het nagemaakte model, een vijandig testgeval en de teksten die bij moeten");
+  const buildText = (await day2.locator("main").textContent()) ?? "";
+  check(buildText.includes("AI_FAKE=1") && buildText.includes("pnpm ai:test -- <model-id>") && buildText.includes("Een nagemaakt model bewijst niets over het echte"), "workshop-2: eerst het nagemaakte model, daarna de echte proef");
+  check(/maandplafond/i.test(aiPrompt) && /noodstop/i.test(aiPrompt) && buildText.includes("Maandplafond") && buildText.includes("Noodstop") && buildText.includes("Alles uitzetten"), "workshop-2: de opdracht en de stap noemen het maandplafond en de noodstop van de module ai (template 1.9.0)");
   for (const [name, text] of [["de opdracht voor de nieuwe functie", intakePrompt], ["de instructie voor de Playground", playground], ["de opdracht voor de AI-functie", aiPrompt]]) {
     check(!text.includes(EM_DASH), `workshop-2: geen em-dash in ${name}`);
     const hits = FORBIDDEN.filter((word) => text.toLowerCase().includes(word.toLowerCase()));
@@ -605,7 +660,7 @@ try {
 
   // Telefoonbreedte: niets schuift opzij.
   await day2.setViewportSize({ width: 390, height: 844 });
-  for (const hash of ["#voorbereiden", "#devprod-1", "#ontwerpen-4", "#ontwerpen-8", "#bouwen-1"]) {
+  for (const hash of ["#voorbereiden", "#devprod-1", "#devprod-3", "#devprod-8", "#ontwerpen-4", "#ontwerpen-8", "#bouwen-1", "#bouwen-3"]) {
     await day2.goto(`${day2Url}${hash}`);
     await day2.locator("#step-heading").waitFor({ state: "visible" });
     const width = await day2.evaluate(() => document.documentElement.scrollWidth);

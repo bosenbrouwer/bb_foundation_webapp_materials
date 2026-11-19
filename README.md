@@ -113,11 +113,11 @@ ook als download, plus `logo.svg` bij een eigen logo.
 |---|---|---|
 | Dag 1 | A. Voorbereiden | accounts, installeren, git, werkmap, het controlescript, je halve pagina, je huisstijl als design system in Claude; thuis, ongeveer een uur |
 | | B. Je tool ontwerpen | acht stappen van projectbasis tot de startprompt; in stap 6 lees je het blok uit je design system in |
-| | C. Op de dag: live zetten | acht stappen van Use this template tot werken via `release/next` |
+| | C. Op de dag: live zetten | acht stappen van Use this template tot werken via `release/next`, met wat er uitrolt en wat de CI nakijkt |
 | Dag 2 | A. Vooraf | tool online, template bijwerken, Vercel CLI, Neon, de Claude Console, akkoord over gegevens, huiswerk |
-| | B. Dev en prod | variabelen per omgeving, een eigen database voor de laptop, previews met een eigen database, een ronde via `release/next`, migraties en terugzetten |
-| | C. AI ontwerpen | de toepassing, de gegevens, de vaste structuur, prompting, testgevallen, kosten en water |
-| | D. AI bouwen | de Playground met een scorekaart, een nieuwe functie, AI in de tool, onderhoud |
+| | B. Dev en prod | variabelen per omgeving, de branches `seed` en `dev` zonder echte gegevens, lokaal werken als de rol van de app, previews uit `seed`, een ronde via `release/next` met de poorten van de CI, migraties en terugzetten, en klaar voor echte gebruikers (de rol van de app op productie en de veiligheidslijst) |
+| | C. AI ontwerpen | de toepassing, het moment (schrijven via een knop), de gegevens (de smokkeltest, tekst van buiten is data, wat nooit meegaat), de vaste structuur, prompting, testgevallen (ook een vijandig), kosten en water |
+| | D. AI bouwen | de Playground met een scorekaart, een nieuwe functie, AI in de tool (eerst het nagemaakte model, dan de echte proef), onderhoud en meten |
 
 **De huisstijl uit een design system.** In deel A, stap 7 maakt de deelnemer in Claude (Claude
 Design, nu in Claude zelf; het losse claude.ai/design sluit op 14 december 2026) een design system
@@ -135,8 +135,38 @@ thuishoort.
 De rode draad van dag 2, deel C en D: **AI vult de inhoud, de tool bepaalt de vorm.** Claude
 antwoordt altijd in dezelfde vaste onderdelen, de tool toont ze altijd met dezelfde componenten, en
 een mens bevestigt. Bedragen rekent de tool, nooit Claude. De opdrachten gaan uit van de module `ai`
-en `pnpm doctor`, die in het template zitten vanaf v1.2.0.
+en `pnpm doctor`, die in het template zitten vanaf v1.2.0, en sinds de update van 17 november 2026
+van template v1.8.0: de smokkeltest (`lib/ai/outgoing.ts`), het nagemaakte model (`AI_FAKE=1`),
+`PlainText`, de branches die uitrollen in `vercel.json`, en de poorten in de CI. Sinds 18 november 2026
+gaan de opdrachten ook uit van template v1.9.0: het maandplafond en de noodstop onder Beheer, AI,
+Grenzen, en de veiligheidslijst `docs/veiligheid.md`. Deel A, stap 2 van dag 2 vraagt daarom om
+template 1.9.0 of hoger: zet de wizard niet live voordat die tag bestaat. Template v1.10.0 (19
+november 2026) is de nieuwste: de lijst van openbare adressen met de proxy als extra ring, alleen
+feiten in het logboek en geen toegang zonder rol. Daar leunt geen stap op, maar wie ernaar bijwerkt,
+kan een typefout op het logboek of een pagina die nu naar de inlog stuurt tegenkomen; stap 2 noemt
+allebei onder "Als het misgaat". De zeven punten "Klaar voor echte gebruikers" in de checklist van
+dag 1 zijn letterlijk gelijk aan die in handleiding 00 van het template.
 
+- **Dev en prod zonder gegevens van gebruikers.** Een preview en de dev-branch komen uit een
+  Neon-branch `seed`, de default branch van het project, niet meer uit productie. Bij een nieuw
+  project (dag 1, deel C, stap 4) is `seed` een gewone branch van de nog lege productiebranch, die
+  je bij het lokaal werken vult, net als `dev`. Bij een bestaand project (dag 2, deel B, stap 3)
+  kiest één vraag de route: zonder gegevens van anderen een gewone branch als momentopname, met
+  gegevens van anderen een branch met alleen het schema, samen met de begeleider. Die laatste route
+  is nog niet tegen een echte database bewezen, net als het ene account voor de preview bij de
+  wachtwoordlogin. Op een branch met alleen het schema is de lijst van gedraaide migraties leeg en
+  strandt `pnpm db:migrate`: de wizard laat het daar nergens draaien. De stappen volgen handleiding 04, 07
+  en 09 van het template: verandert daar iets, pas dan dag 1, deel C, stap 4 en 8 en dag 2, deel B,
+  stap 3, 4 en 6 aan.
+- **Veiligheid als lijst.** Deel B, stap 8 en de checklist die dag 1 oplevert hebben de
+  veiligheidslijst met bouwen (B), instellen (I) en afspreken (A): acht onderwerpen en één opdracht
+  voor Claude Code, geen eigen document. De volledige lijst is het patroon
+  `docs/patronen/veiligheidschecklist.md` in het template.
+- **AI: bewijzen in plaats van beloven.** De opdracht voor de AI-functie vraagt om een smokkeltest
+  per prompt, platte tekst op het scherm, schrijven via de knop, een vijandig testgeval, het
+  nagemaakte model voor lokaal, en de drie teksten die bij moeten (privacyverklaring, data-inventaris,
+  kopje 10 van het projectplan). Een maandplafond en een noodstop in de tool noemt de wizard niet:
+  die bestaan niet in het template.
 - **Kosten.** De rekenhulp schat tokens per verzoek en per maand. Prijzen staan er bewust niet in: de
   deelnemer zoekt ze op de prijspagina van de Console op, als oefening, want ze veranderen.
 - **Water.** Een bandbreedte van ongeveer 0,3 ml tot 45 ml per verzoek, uit de openbare cijfers van
