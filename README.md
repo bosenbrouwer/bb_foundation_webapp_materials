@@ -145,7 +145,12 @@ november 2026) is de nieuwste: de lijst van openbare adressen met de proxy als e
 feiten in het logboek en geen toegang zonder rol. Daar leunt geen stap op, maar wie ernaar bijwerkt,
 kan een typefout op het logboek of een pagina die nu naar de inlog stuurt tegenkomen; stap 2 noemt
 allebei onder "Als het misgaat". De zeven punten "Klaar voor echte gebruikers" in de checklist van
-dag 1 zijn letterlijk gelijk aan die in handleiding 00 van het template.
+dag 1 zijn letterlijk gelijk aan die in handleiding 00 van het template. Template v1.11.0 (21
+november 2026) voegt terugmelden toe: `pnpm template:report-back` zet een les, een besluit of een
+overgenomen bestand na een akkoord als issue bij het template. De laatste stap van dag 2 (deel D,
+Onderhoud) heeft er een blok "Meld terug wat je leerde" voor. Dat blok werkt pas als de deelnemer op
+template 1.11.0 of hoger staat, en het versturen pas als de repo van het template privé is; tot dan
+blijft de melding in `.terugmelding.md` staan.
 
 - **Dev en prod zonder gegevens van gebruikers.** Een preview en de dev-branch komen uit een
   Neon-branch `seed`, de default branch van het project, niet meer uit productie. Bij een nieuw
