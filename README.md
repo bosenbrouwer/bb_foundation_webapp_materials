@@ -150,7 +150,11 @@ november 2026) voegt terugmelden toe: `pnpm template:report-back` zet een les, e
 overgenomen bestand na een akkoord als issue bij het template. De laatste stap van dag 2 (deel D,
 Onderhoud) heeft er een blok "Meld terug wat je leerde" voor. Dat blok werkt pas als de deelnemer op
 template 1.11.0 of hoger staat, en het versturen pas als de repo van het template privé is; tot dan
-blijft de melding in `.terugmelding.md` staan.
+blijft de melding in `.terugmelding.md` staan. Template v1.12.0 (21 november 2026) voegt de seed
+`docs/dreigingsmodel.md` toe. De stap met de veiligheidslijst in dag 2, deel B heeft er een blok "Je
+dreigingsmodel in tien minuten" voor, vóór de lijst: wat je beschermt, wie schrijft wat je tool
+leest, en drie scenario's in volgorde, met een verzonnen voorbeeld. Dat blok werkt pas als de
+deelnemer op template 1.12.0 of hoger staat; de stap noemt dat onder "Als het misgaat".
 
 - **Dev en prod zonder gegevens van gebruikers.** Een preview en de dev-branch komen uit een
   Neon-branch `seed`, de default branch van het project, niet meer uit productie. Bij een nieuw
