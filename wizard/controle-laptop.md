@@ -21,7 +21,7 @@ Er zijn twee versies:
 
    ```powershell
    cd $HOME\Downloads
-   curl.exe -fsSLO https://jbandb.github.io/bb_foundation_webapp_materials/wizard/controle-laptop.ps1
+   curl.exe -fsSLO https://bosenbrouwer.github.io/bb_foundation_webapp_materials/wizard/controle-laptop.ps1
    powershell -ExecutionPolicy Bypass -File .\controle-laptop.ps1
    ```
 
@@ -41,7 +41,7 @@ het commando: `-Werkmap D:\Code`.
 
    ```bash
    cd ~/Downloads
-   curl -fsSLO https://jbandb.github.io/bb_foundation_webapp_materials/wizard/controle-laptop.sh
+   curl -fsSLO https://bosenbrouwer.github.io/bb_foundation_webapp_materials/wizard/controle-laptop.sh
    bash controle-laptop.sh
    ```
 

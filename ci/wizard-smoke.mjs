@@ -450,7 +450,7 @@ try {
   await feedback.click("button[type=submit]");
   const opened = await feedback.evaluate(() => window.__opened);
   const issueUrl = opened[0] ?? "";
-  check(issueUrl.startsWith("https://github.com/JBandB/bb_foundation_webapp_materials/issues/new?"), "versturen zet een issue klaar in de repo van het lesmateriaal, niet in die van het template");
+  check(issueUrl.startsWith("https://github.com/bosenbrouwer/bb_foundation_webapp_materials/issues/new?"), "versturen zet een issue klaar in de repo van het lesmateriaal, niet in die van het template");
   const params = new URL(issueUrl || "https://x.invalid").searchParams;
   check((params.get("title") ?? "").startsWith("[Feedback] De wizard"), "de titel begint met [Feedback] en het onderwerp");
   check((params.get("body") ?? "").includes("**Cijfer:** 8") && (params.get("body") ?? "").includes("Stap 4 & 5 + de kaders: graag groter."), "de tekst bevat cijfer en feedback, met & en + intact");

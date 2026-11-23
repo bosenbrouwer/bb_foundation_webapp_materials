@@ -13,9 +13,9 @@ de twee is `project.config.json`: wat de wizard schrijft, moet de validator van 
 
 | Pagina | Op de site |
 |---|---|
-| De wizard (dag 1) | https://jbandb.github.io/bb_foundation_webapp_materials/wizard/ |
-| Dag 2 | https://jbandb.github.io/bb_foundation_webapp_materials/wizard/workshop-2.html |
-| Feedback | https://jbandb.github.io/bb_foundation_webapp_materials/wizard/feedback.html |
+| De wizard (dag 1) | https://bosenbrouwer.github.io/bb_foundation_webapp_materials/wizard/ |
+| Dag 2 | https://bosenbrouwer.github.io/bb_foundation_webapp_materials/wizard/workshop-2.html |
+| Feedback | https://bosenbrouwer.github.io/bb_foundation_webapp_materials/wizard/feedback.html |
 
 Lokaal: open `wizard/index.html` met een dubbelklik. Er is geen server en geen installatie nodig. Los
 gedownload, zonder de mappen `brand/` en `img/`, werkt hij ook: dan zonder logo, eigen lettertypes
@@ -200,8 +200,9 @@ privévenster), dan werkt de wizard gewoon, alleen zonder geheugen. Zet geen wac
 geheimen in de wizard. Wie op de site inlogt, blijft ingelogd via `foundation-wizard-toegang:v1` (de
 gebruikersnaam en het begin van de hash, geen wachtwoord); Uitloggen wist het.
 
-Wie van het oude adres komt, houdt zijn antwoorden: beide adressen liggen op `jbandb.github.io`, en
-de opslag van de browser hoort bij het domein, niet bij de repo.
+De opslag van de browser hoort bij het domein, niet bij de repo. Antwoorden die iemand vóór 23
+november 2026 op `jbandb.github.io` bewaarde, staan dus niet op het huidige adres, en inloggen moet
+daar opnieuw (zie Het oude adres).
 
 ## Inloggen
 
@@ -284,3 +285,9 @@ opname voordat je hem commit**. De VS Code-schermen (`opname: handmatig`) maak j
 Tot en met template v1.2.0 stond de wizard in de repo van het template, op
 `https://jbandb.github.io/bb_foundation_webapp/wizard/`. Dat adres is offline; de pagina's staan alleen
 nog hier.
+
+Op 23 november 2026 is deze repo verhuisd van een persoonlijk account naar de organisatie
+`bosenbrouwer`. Links naar de repo op GitHub sturen door, het oude adres van de site
+(`https://jbandb.github.io/bb_foundation_webapp_materials/`) niet: dat geeft een 404, bewust zonder
+doorverwijzing. Stuur deelnemers het adres uit de tabel onder Openen. Een kloon zet je om met
+`git remote set-url origin https://github.com/bosenbrouwer/bb_foundation_webapp_materials.git`.
