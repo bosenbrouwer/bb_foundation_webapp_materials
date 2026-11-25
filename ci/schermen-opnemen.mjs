@@ -295,7 +295,7 @@ async function main() {
     const profile = option("profiel");
     const team = option("team");
     const project = option("project");
-    const repo = option("repo") ?? "JBandB/bb_foundation_webapp";
+    const repo = option("repo") ?? "bosenbrouwer/bb_foundation_webapp";
     if (profile === undefined || team === undefined || project === undefined) {
       console.error("Gebruik: node ci/schermen-opnemen.mjs ingelogd --profiel <map buiten de repo> --team <vercel-team> --project <vercel-project> [--repo eigenaar/naam]");
       process.exit(2);

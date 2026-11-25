@@ -111,7 +111,7 @@
       "uitleg": "https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-repository-from-a-template",
       "kaders": [],
       "klikpad": [
-        "Open github.com/JBandB/bb_foundation_webapp.",
+        "Open de repo van het template op GitHub, via de link in deze stap, en log in: de repo is afgeschermd.",
         "Klik rechtsboven op de groene knop Use this template, dan Create a new repository.",
         "Kies bij Owner je eigen account en geef de repo de naam van je tool.",
         "Zet hem op Private.",

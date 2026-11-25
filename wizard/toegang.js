@@ -11,6 +11,7 @@ window.WIZARD_TOEGANG = {
   "versie": 1,
   "iteraties": 100000,
   "accounts": [
-    { "naam": "jorik-01", "actief": true, "zout": "xxjaiaenyVzrw7TnTxtlig==", "hash": "zlnewuXHJ0/gDB4Yj4wUoZeoIliSR+qmjzLUdUvzmQI=" }
+    { "naam": "jorik-01", "actief": true, "zout": "CwR3THTvKO5PQEyptoNCEw==", "hash": "xDb0cN1ZxMcAjWOzQmb3iAHzAfZ0euGk/uyMxbjSIOo=" },
+    { "naam": "dag-2", "actief": true, "zout": "YdPU728HYZ/xpDlk1dr9Kg==", "hash": "6IO+1uvUW21p5fZk0B3H31YlPRHDdp5fBevAzC5+G9s=" }
   ]
 };
