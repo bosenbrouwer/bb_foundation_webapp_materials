@@ -530,6 +530,11 @@ try {
   check(kaartWidth <= 390, `workshop-2: de vier plekken op 390 breed zonder horizontale scroll (${kaartWidth})`);
   await day2.setViewportSize({ width: 1280, height: 900 });
 
+  // Deel A, stap 5: thuis niets in de Console; op de dag een sleutel van de workshop, alleen voor laptop en preview.
+  await day2Open("#voorbereiden-5", "Stap 5 van 8", "deel A, stap 5 over de Console");
+  const consoleText = (await day2.locator("main").textContent()) ?? "";
+  check(consoleText.includes("Thuis hoef je hier niets te doen") && consoleText.includes("sleutel van de workshop") && consoleText.includes("niet bij Production") && consoleText.includes("Create workspace"), "workshop-2: deel A, stap 5 zegt dat er thuis niets te doen is, dat de sleutel van de workshop niet bij Production komt, en hoe de eigen Console later gaat");
+
   // Deel A, stap 7: het huiswerk komt in deel C.
   await day2Open("#voorbereiden-7", "Stap 7 van 8", "het huiswerk opent via het adres");
   await day2.check("#a-route-1");
@@ -630,6 +635,8 @@ try {
   check(((await day2.locator(".test-card pre").first().textContent()) ?? "").startsWith("<gegevens>"), "workshop-2: een testgeval staat tussen <gegevens>");
   await day2.check("#score-1-form");
   check(((await day2.locator("#score-summary").textContent()) ?? "").includes("vorm 1 van 5"), "workshop-2: de scorekaart telt mee");
+  const demoText = (await day2.locator("main").textContent()) ?? "";
+  check(demoText.includes("Je kijkt mee") && demoText.includes("In stap 3 vul je deze testgevallen") && !demoText.includes("Open de Playground"), "workshop-2: deel D, stap 1 is een demo; de deelnemer scoort straks op de preview");
 
   // Deel D, stap 3: de opdracht voor de AI-functie.
   await day2Open("#bouwen-3", "Stap 3 van 4", "deel D, stap 3 met ontwerp");
@@ -641,6 +648,7 @@ try {
   check(aiPrompt.includes("AI_FAKE=1") && aiPrompt.includes("vijandig testgeval") && aiPrompt.includes("privacyverklaring") && aiPrompt.includes("data-inventaris"), "workshop-2: de opdracht noemt het nagemaakte model, een vijandig testgeval en de teksten die bij moeten");
   const buildText = (await day2.locator("main").textContent()) ?? "";
   check(buildText.includes("AI_FAKE=1") && buildText.includes("pnpm ai:test -- <model-id>") && buildText.includes("Een nagemaakt model bewijst niets over het echte"), "workshop-2: eerst het nagemaakte model, daarna de echte proef");
+  check(buildText.includes("sleutel van de workshop") && buildText.includes("Niet bij Production") && buildText.includes("live pas later") && aiPrompt.includes("zet hem niet bij Production"), "workshop-2: de sleutel van de workshop komt alleen bij Preview, ook in de opdracht aan Claude, en live wacht op een eigen sleutel");
   check(/maandplafond/i.test(aiPrompt) && /noodstop/i.test(aiPrompt) && buildText.includes("Maandplafond") && buildText.includes("Noodstop") && buildText.includes("Alles uitzetten"), "workshop-2: de opdracht en de stap noemen het maandplafond en de noodstop van de module ai (template 1.9.0)");
   for (const [name, text] of [["de opdracht voor de nieuwe functie", intakePrompt], ["de instructie voor de Playground", playground], ["de opdracht voor de AI-functie", aiPrompt]]) {
     check(!text.includes(EM_DASH), `workshop-2: geen em-dash in ${name}`);

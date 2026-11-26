@@ -114,10 +114,10 @@ ook als download, plus `logo.svg` bij een eigen logo.
 | Dag 1 | A. Voorbereiden | accounts, installeren, git, werkmap, het controlescript, je halve pagina, je huisstijl als design system in Claude; thuis, ongeveer een uur |
 | | B. Je tool ontwerpen | acht stappen van projectbasis tot de startprompt; in stap 6 lees je het blok uit je design system in |
 | | C. Op de dag: live zetten | acht stappen van Use this template tot werken via `release/next`, met wat er uitrolt en wat de CI nakijkt |
-| Dag 2 | A. Vooraf | tool online, template bijwerken, Vercel CLI, Neon, de Claude Console, akkoord over gegevens, huiswerk |
+| Dag 2 | A. Vooraf | tool online, template bijwerken, Vercel CLI, Neon, de Claude Console (op de dag een sleutel van de workshop, alleen voor laptop en preview en alleen die dag; de eigen Console voor later), akkoord over gegevens, huiswerk |
 | | B. Dev en prod | variabelen per omgeving, de branches `seed` en `dev` zonder echte gegevens, lokaal werken als de rol van de app, previews uit `seed`, een ronde via `release/next` met de poorten van de CI, migraties en terugzetten, en klaar voor echte gebruikers (de rol van de app op productie en de veiligheidslijst) |
 | | C. AI ontwerpen | de toepassing, het moment (schrijven via een knop), de gegevens (de smokkeltest, tekst van buiten is data, wat nooit meegaat), de vaste structuur, prompting, testgevallen (ook een vijandig), kosten en water |
-| | D. AI bouwen | de Playground met een scorekaart, een nieuwe functie, AI in de tool (eerst het nagemaakte model, dan de echte proef), onderhoud en meten |
+| | D. AI bouwen | een demo in de Playground, een nieuwe functie, AI in de tool (eerst het nagemaakte model, dan de echte proef op de preview met de scorekaart; live pas met een sleutel van de eigen organisatie), onderhoud en meten |
 
 **De huisstijl uit een design system.** In deel A, stap 7 maakt de deelnemer in Claude (Claude
 Design, nu in Claude zelf; het losse claude.ai/design sluit op 14 december 2026) een design system
