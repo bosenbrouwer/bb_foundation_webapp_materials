@@ -300,9 +300,9 @@ footer.foot p { margin: .25rem 0; }
   /* De vier delen van de dag. */
   const PARTS = [
     { id: "voorbereiden", key: "prep", letter: "A", name: "Vooraf", time: "thuis, ongeveer een uur" },
-    { id: "devprod", key: "devprod", letter: "B", name: "Dev en prod", time: "09:30 tot 12:15" },
-    { id: "ontwerpen", key: "design", letter: "C", name: "AI ontwerpen", time: "13:00 tot 15:15" },
-    { id: "bouwen", key: "build", letter: "D", name: "AI bouwen", time: "15:15 tot 16:50" },
+    { id: "devprod", key: "devprod", letter: "B", name: "Dev en prod", time: "vanaf 14:00, als eerste" },
+    { id: "ontwerpen", key: "design", letter: "C", name: "AI ontwerpen", time: "na deel B" },
+    { id: "bouwen", key: "build", letter: "D", name: "AI bouwen", time: "na deel C, zover als het komt voor 18:00" },
   ];
   const FIELD_KINDS = [["short", "Korte tekst"], ["long", "Lange tekst"], ["number", "Getal"], ["date", "Datum"], ["choice", "Keuze uit een lijst"], ["yesno", "Ja of nee"], ["email", "E-mailadres"], ["phone", "Telefoonnummer"]];
   const OUTPUT_KINDS = [["short", "Korte tekst"], ["long", "Langere tekst"], ["choice", "Keuze uit een vaste lijst"], ["number", "Getal"], ["list", "Lijst"], ["yesno", "Ja of nee"]];
@@ -999,7 +999,7 @@ footer.foot p { margin: .25rem 0; }
         ["Claude meldt een versie lager dan 1.12.1", "Dan staat de nieuwste versie nog niet klaar om op te halen. Commit niets en meld het aan wie je begeleidt. Zodra die zegt dat het klaarstaat, vraag je Claude het opnieuw te proberen."],
         ["Claude wil een bestand van het template aanpassen om iets groen te krijgen", "Zeg nee: bij de volgende update wordt het weer overschreven. Vraag Claude de oorzaak in je eigen code te zoeken. Komt het er niet uit, meld het dan vooraf."],
         ["Claude wil pushen, of ik heb al op Sync geklikt", "Nog niet gesynct: zeg nee. Al gesynct op `release/next`: laat het staan. Vercel probeert een preview te bouwen, maar de controle in de bouw weigert dat zolang je database nog niet gescheiden is, en je live tool blijft zoals hij was. Al gesynct op `main`: dan staat de update live zonder proef op een kopie. Kijk of je tool het doet, en meld het vooraf."],
-        ["De build of de tests blijven rood", "Laat het rood staan en commit wat er is. Kopieer wat Claude als laatste zegt en meld het vooraf, of kom om half negen naar de inloop: dan lossen we het daar op."],
+        ["De build of de tests blijven rood", "Laat het rood staan en commit wat er is. Kopieer wat Claude als laatste zegt en meld het vooraf, of kom om tien uur naar de inloop: dan lossen we het daar op."],
         ["Claude wil eerst iets proberen op een dev-branch, en die heb ik nog niet", "Die maak je op de dag, in deel B. Laat Claude het als handwerk opschrijven onder \"op dag 2\"."],
         ["Claude meldt dat een bestand van het template is overgeslagen", "Dat bestand heb je zelf aangepast. Vraag Claude wat het verschil is. Kies liever de versie van het template."],
         ["Na het bijwerken faalt de typecheck op het logboek", "Dat hoort bij template 1.10.0: het logboek neemt alleen nog feiten aan, zoals codes en lengtes, en geen vrije tekst. Vraag Claude de aanroepen om te zetten zoals de CHANGELOG van het template zegt, en daarna `pnpm typecheck` te draaien."],
@@ -1059,7 +1059,7 @@ footer.foot p { margin: .25rem 0; }
       doen: [
         blokken(
           blok("Op de dag: een sleutel van de workshop",
-            "Je krijgt hem 's middags, in deel D, via een link die één keer opengaat.",
+            "Je krijgt hem op de dag, als je aan deel D begint, via een link die één keer opengaat.",
             "Hij hoort bij een eigen workspace met een limiet, en werkt tot het eind van de dag.",
             "Hij komt in Vercel alleen bij **Preview** en op je laptop in `.env.local`, niet bij Production. Zo gaan er vandaag alleen verzonnen gegevens naar Claude."),
           blok("Later, als je AI live wilt: de Console van je organisatie",
@@ -1147,7 +1147,7 @@ footer.foot p { margin: .25rem 0; }
       misgaat: [
         ["Claude kent pnpm doctor niet", "Je staat niet op `release/next`, of het template is niet bijgewerkt. Kies linksonder `release/next`; staat je update daar niet, ga dan terug naar stap 2."],
         ["Claude meldt migraties die nog openstaan", "Dat klopt: de nieuwe migraties uit je update draai je op de dag, eerst op een kopie van je database."],
-        ["Iets blijft rood", "Kom om half negen naar de inloop, met een schermafbeelding van wat Claude zegt."],
+        ["Iets blijft rood", "Kom om tien uur naar de inloop, met een schermafbeelding van wat Claude zegt."],
       ],
     }) },
   ];
@@ -1178,7 +1178,7 @@ footer.foot p { margin: .25rem 0; }
       ],
       waarom: "Op dag 1 werkte iedereen lokaal op de echte database en direct op `main`. Dat kan zolang niemand je tool gebruikt. Vanaf je eerste gebruiker is het een risico.",
       gelukt: [P("Je kunt in een zin zeggen waar je test en waar je gebruikers werken.")],
-      misgaat: [["Mijn tool heeft nog geen gebruikers", "Dan is dit het moment: nu kost het een ochtend, straks een incident."]],
+      misgaat: [["Mijn tool heeft nog geen gebruikers", "Dan is dit het moment: nu kost het een paar uur, straks een incident."]],
     }) },
     { title: "Je variabelen per omgeving", nav: "Variabelen", body: () => ({
       lead: "Elke instelling van je tool staat in Vercel, per omgeving.",
@@ -1701,26 +1701,26 @@ footer.foot p { margin: .25rem 0; }
   /* Deel D: AI bouwen. */
   const BUILD_STEPS = [
     { title: "AI bouwen", body: buildIntro },
-    { title: "Kijk mee in de Playground", nav: "Playground", body: () => {
+    { title: "De demo in de Playground", nav: "Playground", body: () => {
       const problems = instructionProblems();
       const tests = state.ai.tests.map((test, i) => [test, i]).filter(([test]) => t(test.input));
       return {
-        lead: "Wie je begeleidt laat in de Claude Console zien wat Claude met een instructie doet, voordat er een regel code is. Je eigen testgevallen draai je straks in je tool, op de preview.",
-        nu: "Je kijkt mee. Op het scherm gaan een instructie uit de groep en een paar testgevallen naar Claude in de Playground van de Console. Je tool doet nog niet mee, en je hebt hier zelf geen account in de Console voor nodig.",
+        lead: "In de demo van 11:00 zag je in de Claude Console wat Claude met een instructie doet, voordat er een regel code is. Hier staat jouw instructie in die vorm, met je testgevallen voor straks.",
+        nu: "Je kijkt terug op de demo, nu met je eigen instructie. Je tool doet nog niet mee, en je hebt hier zelf geen account in de Console voor nodig.",
         doen: [
           blokken(
-            blok("Kijk naar de vorm",
-              "De instructie gaat in het systeemveld, een testgeval als bericht, en dan **Run**.",
-              copyCard({ id: "playground", title: "Jouw instructie, zoals hij in de Playground zou staan", what: "de instructie", label: "Kopieer de instructie", hint: "Voor het systeemveld. De laatste regel vraagt om JSON, zodat je de vaste onderdelen ziet; in je tool dwingt het schema ze af.", text: buildInstruction(true), problems, after: "Wil je dat jouw instructie in de demo komt? Zeg het tegen wie je begeleidt.", view: "Bekijk de instructie", rows: 12 }),
+            blok("De vorm",
+              "In de Playground gaat de instructie in het systeemveld, een testgeval als bericht, en dan **Run**.",
+              copyCard({ id: "playground", title: "Jouw instructie, zoals hij in de Playground zou staan", what: "de instructie", label: "Kopieer de instructie", hint: "Voor het systeemveld. De laatste regel vraagt om JSON, zodat je de vaste onderdelen ziet; in je tool dwingt het schema ze af.", text: buildInstruction(true), problems, after: "Met de Console van je eigen organisatie probeer je hem later zelf in de Playground.", view: "Bekijk de instructie", rows: 12 }),
               problems.length ? null : voorbeeld("zo ziet een antwoord eruit, met jouw vaste onderdelen", exampleAnswer()),
-              problems.length ? null : ziet("in de demo precies de vaste onderdelen, en geen tekst ervoor of erna.")),
-            blok("Kijk naar de rare en de vijandige",
-              "Let erop wat Claude doet met een testgeval dat niet bij de taak past, en met een tekst die een eigen opdracht verstopt. Zegt Claude netjes dat het niet past, en blijft de verstopte opdracht een gegeven?"),
-            blok("Kijk hoe je een model kiest",
+              problems.length ? null : ziet("precies de vaste onderdelen, en geen tekst ervoor of erna. Zo zag het er in de demo ook uit.")),
+            blok("De rare en de vijandige",
+              "In de demo zag je wat Claude doet met een testgeval dat niet bij de taak past, en met een tekst die een eigen opdracht verstopt. Claude zegt netjes dat het niet past, en de verstopte opdracht blijft een gegeven. Dat kijk je straks in je eigen tool na."),
+            blok("Hoe je een model kiest",
               "Dezelfde testgevallen op een groot en op een klein model. Vergelijk de score, de snelheid en het aantal tokens, en kies er een.",
               voorbeeld("zo vergelijk je, met verzonnen cijfers", "Model    Score      Tijd    Tokens\ngroot    8 van 8    4 s     1200\nklein    7 van 8    1 s     1150"),
               "Het kleine model twee keer op dezelfde testgevallen: in een eerder project gaf een klein model bij 9 procent van zijn keuzes de tweede keer een ander antwoord.",
-              "Schrijf het model-id op van het kleine model uit de demo. Daar begin je straks mee in je tool."),
+              "Begin straks in je tool met het kleine model uit de demo. Wie je begeleidt geeft je het model-id."),
             blok("Je scorekaart, voor straks",
               "In stap 3 vul je deze testgevallen op de preview in je scherm in en klik je **Stel voor**. Vink dan hier per testgeval aan wat klopt.",
               "Bewaar bij elk testgeval het antwoord dat Claude gaf, bijvoorbeeld in een tekstbestand naast je testgevallen. Daarmee keur je later opnieuw, zonder Claude opnieuw te vragen.",
@@ -2227,7 +2227,7 @@ footer.foot p { margin: .25rem 0; }
       voorbereiden: "Je tool, het template, de Vercel CLI, Neon, hoe het met de Claude Console zit, een akkoord over gegevens en je huiswerk. Thuis, een paar dagen van tevoren.",
       devprod: "Een eigen database op je laptop, elke wijziging eerst op een preview zonder echte gegevens, terugzetten als het misgaat, en de lijst voor je eerste echte gebruiker.",
       ontwerpen: "Wat AI wel en niet kan, je toepassing, de gegevens, een vaste structuur, prompting, testen, en wat het kost in geld en water.",
-      bouwen: "Eerst een demo in de Playground. Dan in je tool: eerst met een nagemaakt model, daarna echt op de preview, met een sleutel van de workshop, een scorekaart en de kosten in Beheer.",
+      bouwen: "Terug naar de demo in de Playground. Dan in je tool: eerst met een nagemaakt model, daarna echt op de preview, met een sleutel van de workshop, een scorekaart en de kosten in Beheer.",
     };
     const cards = PARTS.map((part) => {
       const progress = partProgress(part);
@@ -2238,6 +2238,7 @@ footer.foot p { margin: .25rem 0; }
     const out = [
       h("p", { class: "lead" }, "Dag 2 gaat over twee dingen. Je werkt gescheiden: testen op je laptop en op een preview, je gebruikers op productie. En je zet AI in je tool, met een instructie die werkt, testgevallen die het bewijzen, en de kosten in beeld."),
       h("div", { class: "cards" }, cards),
+      ...dayProgram(),
       ...howItWorks(),
       H3("De rode draad van de middag"),
       P("**AI vult de inhoud, je tool bepaalt de vorm.** Claude antwoordt altijd in dezelfde vaste onderdelen, en je tool toont ze altijd op dezelfde manier. Een mens beslist."),
@@ -2248,16 +2249,24 @@ footer.foot p { margin: .25rem 0; }
     out.push(resetBlock());
     return { custom: out };
   }
+  /* Het programma van de dag: op het welkom en aan het begin van deel B. */
+  function dayProgram() {
+    return [
+      H3("Het programma van de dag"),
+      UL("10:00 Inloop, voor wie nog vragen heeft",
+        "11:00 Veiligheid, dev en prod, en AI: uitleg en een demo",
+        "12:00 Laten zien: wie wil, laat iets zien van de eigen tool",
+        "13:00 Lunch",
+        "14:00 Zelf bouwen, met begeleiding, tot 18:00: eerst deel B, dan deel C en D, zover als het komt"),
+      P("Deel B gaat voor. Zonder de scheiding zet je de update van thuis niet veilig live, en deel D bouwt op de preview uit deel B. Wat je vandaag van deel C en D niet afkrijgt, doe je thuis met deze wizard."),
+    ];
+  }
   function devprodIntro() {
     return { custom: [
-      h("p", { class: "lead" }, "De ochtend: je tool krijgt gescheiden omgevingen. Je laptop werkt op een eigen database, elke wijziging gaat eerst naar een preview, en je oefent het terugzetten."),
+      h("p", { class: "lead" }, "Het eerste deel van het zelf bouwen: je tool krijgt gescheiden omgevingen. Je laptop werkt op een eigen database, elke wijziging gaat eerst naar een preview, en je oefent het terugzetten."),
       ...howItWorks(),
-      note("Vanochtend komt er één ding bij: dezelfde vier plekken bestaan straks drie keer. Op je laptop met een eigen database vol verzonnen gegevens, als preview met ook een eigen database zonder echte gegevens, en live met de echte."),
-      H3("Het programma"),
-      UL("09:30 Waarom scheiden, je variabelen, een eigen database, lokaal werken (stap 1 tot en met 4)",
-        "10:30 Pauze",
-        "10:45 Previews en een ronde via `release/next` (stap 5 en 6)",
-        "11:30 Migraties, terugzetten, en klaar voor echte gebruikers (stap 7 en 8)"),
+      note("Vandaag komt er één ding bij: dezelfde vier plekken bestaan straks drie keer. Op je laptop met een eigen database vol verzonnen gegevens, als preview met ook een eigen database zonder echte gegevens, en live met de echte."),
+      ...dayProgram(),
       H3("De stappen"),
       stepLinks("devprod"),
       P("Elke stap zegt wat je doet, hoe je ziet dat het gelukt is, en wat je doet als het misgaat. Vink een stap af als hij klaar is."),
@@ -2265,12 +2274,7 @@ footer.foot p { margin: .25rem 0; }
   }
   function designIntro() {
     return { custom: [
-      h("p", { class: "lead" }, "De eerste helft van de middag: je ontwerpt één AI-functie, voordat er een regel code is."),
-      H3("Het programma"),
-      UL("13:00 Wat AI kan, je toepassing, het moment, de gegevens en de structuur (stap 1 tot en met 5)",
-        "13:45 Prompting, met een oefening (stap 6)",
-        "14:30 Pauze",
-        "14:45 Testgevallen, en wat het kost in geld en water (stap 7 en 8)"),
+      h("p", { class: "lead" }, "Na deel B: je ontwerpt één AI-functie, voordat er een regel code is."),
       H3("De stappen"),
       stepLinks("ontwerpen"),
       note("Laat AI alleen doen wat code niet kan. Of een datum binnen twee weken valt, rekent je tool uit; een vrije tekst samenvatten kan je tool niet."),
@@ -2278,12 +2282,8 @@ footer.foot p { margin: .25rem 0; }
   }
   function buildIntro() {
     return { custom: [
-      h("p", { class: "lead" }, "De tweede helft van de middag: van ontwerp naar een knop in je tool."),
-      H3("Het programma"),
-      UL("15:15 Kijk mee in de Playground (stap 1)",
-        "15:45 Je nieuwe functie, als je die bouwt (stap 2), en AI in je tool (stap 3)",
-        "16:30 Laten zien",
-        "16:50 Hoe verder: onderhoud (stap 4)"),
+      h("p", { class: "lead" }, "Na deel C: van ontwerp naar een knop in je tool, zover als het komt voor 18:00."),
+      note("De sleutel van de workshop werkt alleen vandaag. Kom je niet tot de echte proef in stap 3, dan bouw je thuis verder met het nagemaakte model, tot er een sleutel van je eigen organisatie is."),
       H3("De stappen"),
       stepLinks("bouwen"),
     ] };

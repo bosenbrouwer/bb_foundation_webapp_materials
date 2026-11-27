@@ -514,6 +514,10 @@ try {
   check((await day2.locator('a[href="index.html"]').count()) > 0, "workshop-2: linkt terug naar de wizard van de eerste dag");
   // Zo werkt het, en in elke stap wat er gebeurt (feedback van dag 1: mensen willen weten wat er gebeurt).
   check((await day2.locator("ol.kaart > li").count()) === 4 && (await day2.locator(".kaart-nieuw").count()) === 1, "workshop-2: het welkom toont de vier plekken van je tool en de Console");
+  const welcomeText = (await day2.locator("main").textContent()) ?? "";
+  check(["10:00 Inloop", "11:00 Veiligheid, dev en prod, en AI", "12:00 Laten zien", "13:00 Lunch", "14:00 Zelf bouwen", "Deel B gaat voor"].every((part) => welcomeText.includes(part)) && !/09:30|08:30|half negen/.test(welcomeText), "workshop-2: het welkom toont het programma van de dag, met deel B als eerste");
+  const pageSource = await day2.content();
+  check(!/half negen|08:30|09:30|15:15|16:50/.test(pageSource), "workshop-2: nergens nog een tijd uit het oude programma");
   for (const [id, steps] of [["voorbereiden", 8], ["devprod", 8], ["ontwerpen", 8], ["bouwen", 4]]) {
     const missing = [];
     for (let n = 1; n <= steps; n += 1) {
@@ -636,7 +640,7 @@ try {
   await day2.check("#score-1-form");
   check(((await day2.locator("#score-summary").textContent()) ?? "").includes("vorm 1 van 5"), "workshop-2: de scorekaart telt mee");
   const demoText = (await day2.locator("main").textContent()) ?? "";
-  check(demoText.includes("Je kijkt mee") && demoText.includes("In stap 3 vul je deze testgevallen") && !demoText.includes("Open de Playground"), "workshop-2: deel D, stap 1 is een demo; de deelnemer scoort straks op de preview");
+  check(demoText.includes("Je kijkt terug op de demo") && demoText.includes("In stap 3 vul je deze testgevallen") && !demoText.includes("Open de Playground"), "workshop-2: deel D, stap 1 kijkt terug op de demo; de deelnemer scoort straks op de preview");
 
   // Deel D, stap 3: de opdracht voor de AI-functie.
   await day2Open("#bouwen-3", "Stap 3 van 4", "deel D, stap 3 met ontwerp");
